@@ -5,22 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../CSS/style.css">
   <script src="../JS/script.js"></script>
-  <title>Inicio</title>
+  <title>InterviewApp</title>
 </head>
 <body>
 <!-- Comienzo la estructura del login -->
   <div class="main">
-    <div>
-      <img class="logo" src="../MEDIA/logo.webp" alt="">
+    <div class="logo-container">
+      <img class="logo" src="../MEDIA/logo.webp" alt="Logotipo empresa">
     </div>
 
+    <!-- TODO Tengo que cambiar todo el CSS para dejarlo más bonito y poder usar los validate-text de manera óptima, otro problema es que en el primer text input la imagen está por encima de este -->
     <form class="login-form">
-      <label class="user" for="">USUARIO<input id="user" type="text"></label>
-      <p class="validate-text"></p>
-      <label class="pass" for="">PASSWORD<input id="pass" type="text"></label>
-      <p class="validate-text"></p>
-      <input class="login" type="button" value="LOGIN" onclick="fetchUsuarios()"/>
-      <input class="register" type="button" value="REGISTRO" onclick="register()"/>
+      <label class="user" for=""><span>USUARIO</span><input id="user" type="text" autocomplete="off" oninput="userValidate()"></label>
+      <p class="validate-text" id="user-validation"></p>
+
+      <label class="pass" for=""><span>PASSWORD</span><input id="pass" type="password" autocomplete="off" oninput="passValidate()"></label>
+      <p class="validate-text" id="pass-validation"></p>
+
+      <input class="login" type="button" value="LOGIN" name="option" onclick="sendForm()"/>
+
+      <input class="register" type="button" value="REGISTRO" name="option" onclick="showRegister()"/>
     </form>
   </div>
 

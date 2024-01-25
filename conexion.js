@@ -2,6 +2,15 @@
 const mysql = require('mysql');
 const express = require ('express');
 const app = express();
+
+
+app.set("view engine", "ejs");
+
+app.get("/HTML/index", function(req,res) {
+    res.render("HTML/index");
+});
+
+
 app.listen(3000, function () {
     console.log("servidor creado en el http://localhost:3000");
 })
