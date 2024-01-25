@@ -9,7 +9,6 @@ function validate() {
 
 
 
-
 function register() {
   const screenWidth = screen.width;
   const screenHeight = screen.height;
