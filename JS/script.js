@@ -1,5 +1,6 @@
 const regexUser = /^\d{4}$/;
-const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
+const regexPass = /^\d{4}$/;
+//const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
 
 // Función para validar el campo del usuario de manera dinámica
 function userValidate() {
@@ -45,6 +46,8 @@ function sendForm() {
     let form = document.getElementById("login-form");
     // Aquí puedes realizar acciones adicionales si es necesario antes de enviar el formulario
     form.submit();
+  }else{
+      alert("sendform validate devuelve false");
   }
 }
 
