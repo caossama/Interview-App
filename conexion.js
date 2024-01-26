@@ -4,53 +4,41 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
 const app = express();
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
+
 // Configurar la ubicación de las vistas con ruta relativa
 app.set('views', path.join(__dirname, 'HTML'));
-app.use(express.static('./CSS'));
-app.use(express.static('./MEDIA'));
+app.use(express.static(path.join(__dirname, 'HTML')));
+app.use(express.static(path.join(__dirname, 'CSS')));
+app.use(express.static(path.join(__dirname, 'MEDIA')));
+app.use(express.static(path.join(__dirname, 'JS'),{ 'Content-Type': 'application/javascript' }));
 
-
-//cargamos el index.ejs
+//cargamos el index.
 app.get('/index', function (request, response) {
     console.log("dentor del index inicial");
     response.sendFile(path.join(__dirname, 'HTML', 'index.html'));
-    let action = request.body.option;
-    let user = String(request.body.user);
-    let register = String(request.body.register);
-
-    if (action==="LOGIN") {
-
-        alert("mirando la base de datos"+user+register);
-    } else if(action==="REGISTRO") {
-        console.log("registrando");
-        response.sendFile(path(__dirname, 'HTML', 'registro.html'));
-    }
-    else{
-        console.log("salida mala");
-    }
     //response.render('index');
 });
 
 
 
-
-
-// app.get('/simulacion', function (request, response) {
-//     response.sendFile(path.join(__dirname, 'HTML', 'simulacion.html'));
-//     //response.render('index');
-// });
-
-//app.post("/index", function (request, response) {
-    
-
-
-//})
-
-
-
-
+app.post("/index", function (request, response) {
+    let action = request.body.option;
+    let user = String(request.body.user);
+    let register = String(request.body.pass);
+    if (action==="LOGIN") {
+        console.log("mirando la base de datos"+user+register);
+    } else if(action==="REGISTRO") {
+    console.log("registrando");
+        response.sendFile(path.join(__dirname, 'HTML', 'registro.html'));
+    }
+    else{
+        console.log("salida mala");
+        response.send("opcion desconocida");
+    }
+})
 
 
 app.listen(3000, function () {
