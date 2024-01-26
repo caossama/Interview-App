@@ -16,7 +16,7 @@
 
     <!-- TODO Tengo que cambiar todo el CSS para dejarlo más bonito y poder usar los validate-text de manera óptima, otro problema es que en el primer text input la imagen está por encima de este -->
     <form action="index" method="post" class="login-form">
-      <label class="user" for=""><span>USUARIO</span><input id="user" name="user" type="text" autocomplete="off" oninput="userValidate()" ></label> <!-- oninput="userValidate()"-->
+      <label class="user" for=""><span>USUARIO</span><input id="user" name="user" type="text" autocomplete="off" onsubmit="return sendForm()" oninput="userValidate()" ></label> <!-- oninput="userValidate()"-->
       <p class="validate-text" id="user-validation"></p>
 
       <label class="pass" for=""><span>PASSWORD</span><input id="pass" name="pass" type="password" autocomplete="off" oninput="passValidate()" ></label> <!--oninput="passValidate()" -->

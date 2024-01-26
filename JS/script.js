@@ -46,8 +46,10 @@ function sendForm() {
     let form = document.getElementById("login-form");
     // Aquí puedes realizar acciones adicionales si es necesario antes de enviar el formulario
     form.submit();
+    return true;
   }else{
       alert("sendform validate devuelve false");
+      return false;
   }
 }
 

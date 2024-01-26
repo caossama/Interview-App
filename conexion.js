@@ -54,8 +54,8 @@ app.post("/index", function (request, response) {
                 console.error('Error en la consulta:', error);
                 response.status(500).send('Error en la consulta');
             } else {
-                console.log('resultados');
-                resultados.json(resultados);
+                console.log(resultados);
+                //resultados.json(resultados);
             }
         });
         //response.sendFile(path.join(__dirname,'HTML', 'simulacion.html'));
