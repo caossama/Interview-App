@@ -3,31 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../CSS/style.css">
-  <script src="../JS/script.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="/script.js"></script>
   <title>InterviewApp</title>
 </head>
 <body>
 <!-- Comienzo la estructura del login -->
   <div class="main">
     <div class="logo-container">
-      <img class="logo" src="../MEDIA/logo.webp" alt="Logotipo empresa">
+      <img class="logo" src="logo.webp" alt="Logotipo empresa">
     </div>
 
     <!-- TODO Tengo que cambiar todo el CSS para dejarlo más bonito y poder usar los validate-text de manera óptima, otro problema es que en el primer text input la imagen está por encima de este -->
-    <form class="login-form">
-      <label class="user" for=""><span>USUARIO</span><input id="user" type="text" autocomplete="off" oninput="userValidate()"></label>
+    <form action="index" method="post" class="login-form">
+      <label class="user" for=""><span>USUARIO</span><input id="user" name="user" type="text" autocomplete="off" onsubmit="return sendForm()" oninput="userValidate()" ></label> <!-- oninput="userValidate()"-->
       <p class="validate-text" id="user-validation"></p>
 
-      <label class="pass" for=""><span>PASSWORD</span><input id="pass" type="password" autocomplete="off" oninput="passValidate()"></label>
+      <label class="pass" for=""><span>PASSWORD</span><input id="pass" name="pass" type="password" autocomplete="off" oninput="passValidate()" ></label> <!--oninput="passValidate()" -->
       <p class="validate-text" id="pass-validation"></p>
 
-      <input class="login" type="button" value="LOGIN" name="option" onclick="sendForm()"/>
+      <input class="" type="submit" value="LOGIN" name="option" onclick="sendForm()" /> <!--onclick="sendForm() "login"-->
 
-      <input class="register" type="button" value="REGISTRO" name="option" onclick="showRegister()"/>
+      <input class="" type="submit" value="REGISTRO" name="option" onclick="showRegister()" /> <!--onclick="showRegister()" "register"-->
     </form>
   </div>
-
-  <script src="../JS/script.js"></script>
 </body>
 </html>
