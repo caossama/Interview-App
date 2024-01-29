@@ -43,24 +43,35 @@ app.get('/index', function (request, response) {
 
 
 app.post("/index", function (request, response) {
+    console.log("dentro del post");
     let action = request.body.option;
     let user = String(request.body.user);
-    let register = String(request.body.pass);
+    let pass = String(request.body.pass);
     if (action === "LOGIN") {
-        console.log("mirando la base de datos"+user+register);
-        const consulta = 'SELECT * FROM users';
+        console.log("mirando la base de datos"+user+pass);
+        const consulta = `SELECT * FROM users WHERE login_name = "${user}"`;
         dbConnection.query(consulta, (error, resultados) => {
             if (error) {
                 console.error('Error en la consulta:', error);
                 response.status(500).send('Error en la consulta');
             } else {
-                console.log(resultados);
+                if(resultados.length>0){
+                    console.log("action");
+                    console.log("user");
+                    console.log("register");
+                    console.log(resultados);
+                    console.log("");
+                    response.redirect('/simulacion.html');
+                }else{
+                    console.log("no hay resultados");
+                    response.redirect('/index.html');
+                }
                 
                 //resultados.json(resultados);
             }
         });
         //response.sendFile(path.join(__dirname,'HTML', 'simulacion.html'));
-        response.redirect('/simulacion.html');
+        
     } else if(action === "REGISTRO") {
     console.log("registrando");
         //response.sendFile(path.join(__dirname, 'HTML', 'registro.html'));
