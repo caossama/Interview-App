@@ -49,7 +49,6 @@ function sendForm() {
     form.submit();
     return true;
   }else{
-      alert("sendform validate devuelve false");
       return false;
   }
 }
