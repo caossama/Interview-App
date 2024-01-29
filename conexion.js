@@ -55,6 +55,7 @@ app.post("/index", function (request, response) {
                 response.status(500).send('Error en la consulta');
             } else {
                 console.log(resultados);
+                
                 //resultados.json(resultados);
             }
         });
