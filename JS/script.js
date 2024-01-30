@@ -94,8 +94,6 @@ function showRegister() {
   }, 1000);
 }
 
-
-
 // Obtener el elemento de video
 let video = document.getElementById("videoElement");
 let stream;
@@ -170,4 +168,3 @@ function stopInterview() {
   }
   console.log(localStorage.getItem('recordedVideo'));
 }
-

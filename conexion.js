@@ -94,8 +94,6 @@ app.post("/index", function (request, response) {
     dbConnection.end();
 });
 
-
-
 app.post("/registro",function (request,response) {
     console.log("dentro del post Resgistro");
     //capturamos las variables del post
@@ -138,54 +136,57 @@ app.post("/registro",function (request,response) {
                     console.log(nAspiranteActualConCeros);
                     const query=`INSERT INTO users (login_name, password, role) VALUES ('${nAspiranteActualConCeros}', '${pass}', 3)`;
 
-
-
                     dbConnection.query(query, (error, resultados) => {
                         if (error) {//si muestra error
                             console.error('Error en la consulta:', error);
                             response.status(500).send('Error en la consulta');
                         } else {
                             console.log(resultados);
-                            const queryConsulta = "select * from users"
-                            dbConnection.query(query,(error,resultados)=>{
-                                if(error){
+                            const query = `select * from users order by id desc limit 1`;
+
+                            dbConnection.query(query, (error, resultados) => {
+                                if (error) {//si muestra error
                                     console.error('Error en la consulta:', error);
                                     response.status(500).send('Error en la consulta');
-                                }else{
+                                } else {
                                     console.log(resultados);
-                                }
-                            })
+                                    const loginName = resultados[0].login_name;
+                                    console.log(loginName);
+                                    const htmlToSend = `
+                                    <!DOCTYPE html>
+                                    <html lang="es">
+                                    <head>
+                                        <meta charset="UTF-8">
+                                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                        <title>Tu Página</title>
+                                        <script>
+                                            function mostrarMensaje() {
+                                                var confirmacion = confirm('¿Seguro que quieres salir?');
+                                                if (confirmacion) {
+                                                    window.close();
+                                                }
+                                            }
+                                        </script>
+                                    </head>
+                                    <body>
+                                        <p>Bienvenido Aspirante, tu número de usuario es: ${loginName}</p>
+                                        
+                                        <!-- Botón que muestra el mensaje -->
+                                        <button onclick="mostrarMensaje()">Cerrar Ventana</button>
+                                    </body>
+                                    </html>
+                                    `;
+                                    response.send(htmlToSend);
+                                };
+                            });
                         }
                     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 }
             }
         });
     }
 });
-
-
-
-
-
-
-
-
 
 app.listen(3000, function () {
     console.log("Servidor creado en http://localhost:3000/index");
