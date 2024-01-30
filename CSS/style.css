@@ -81,6 +81,12 @@ body {
   width: 100%;
   height: 100%;
   grid-row: 2/3;
+
+  font-size: 1.5rem;
+}
+
+.user #user:focus {
+  background: rgb(255, 255, 255);
 }
 
 #user-validation {
@@ -106,6 +112,12 @@ body {
   width: 100%;
   height: 100%;
   grid-row: 2/3;
+
+  font-size: 1.5rem;
+}
+
+.pass #pass:focus {
+  background: rgb(255, 255, 255);
 }
 
 #pass-validation {
@@ -114,12 +126,14 @@ body {
 }
 
 .validate-text {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 
 .login {
   grid-row: 7/9;
   grid-column: 3/5;
+
+  font-size: 1.5rem;
 }
 
 .register {
@@ -127,6 +141,12 @@ body {
   grid-column: 6/8;
 
   border-bottom-right-radius: 30% 65%;
+  font-size: 1.5rem;
+}
+
+.login:hover, .register:hover {
+  background: rgb(90, 90, 90);
+  cursor: pointer;
 }
 
 /* 

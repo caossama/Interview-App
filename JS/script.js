@@ -1,6 +1,8 @@
 const regexUser = /^\d{4}$/;
-const regexPass = /^\d{4}$/;
-//const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
+const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
+
+const form = document.getElementById("login-form");
+const loginButton = document.getElementsByClassName("login");
 
 // Función para validar el campo del usuario de manera dinámica
 function userValidate() {
@@ -34,23 +36,26 @@ function validate() {
   if (!regexUser.test(user) && !regexPass.test(pass)) {
     userValidate();
     passValidate();
+    // Desactiva el botón
+    loginButton.disabled = true;
     return false;
   } else {
+    // Activa el botón
+    loginButton.disabled = false;
     return true;
   }
 }
 
-// TODO Integrar esta función de la manera correcta
 function sendForm() {
   if (validate()) {
     // Si la validación es exitosa, procede a enviar el formulario al servidor
-    let form = document.getElementById("login-form");
     // Aquí puedes realizar acciones adicionales si es necesario antes de enviar el formulario
     form.submit();
     return true;
-  }else{
-      alert("sendform validate devuelve false");
-      return false;
+  } else {
+    // Muestra un mensaje de alerta cuando se intente hacer clic en el botón desactivado
+    alert("Por favor, complete los campos correctamente antes de hacer clic en LOGIN.");
+    return false;
   }
 }
 
