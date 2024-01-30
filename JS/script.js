@@ -2,17 +2,21 @@ const regexUser = /^\d{4}$/;
 const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
 
 const form = document.getElementById("login-form");
-const loginButton = document.getElementsByClassName("login");
 
 // Función para validar el campo del usuario de manera dinámica
 function userValidate() {
   let user = document.getElementById("user").value;
   let userValidationText = document.getElementById("user-validation");
+  const loginButton = document.querySelector(".login");
+
+
 
   if (!regexUser.test(user)) {
     userValidationText.textContent = "Introduzca un número de usuario válido";
+    loginButton.disabled = true;
   } else {
     userValidationText.textContent = "";
+    loginButton.disabled = false;
   }
 }
 
@@ -20,42 +24,42 @@ function userValidate() {
 function passValidate() {
   let pass = document.getElementById("pass").value;
   let passValidationText = document.getElementById("pass-validation");
+  const loginButton = document.querySelector(".login");
+
 
   if (!regexPass.test(pass)) {
     passValidationText.textContent =
       "La contraseña no cumple con los requisitos.";
+      loginButton.disabled = true;
   } else {
     passValidationText.textContent = "";
-  }
-}
-
-function validate() {
-  let user = document.getElementById("user").value;
-  let pass = document.getElementById("pass").value;
-
-  if (!regexUser.test(user) && !regexPass.test(pass)) {
-    userValidate();
-    passValidate();
-    // Desactiva el botón
-    loginButton.disabled = true;
-    return false;
-  } else {
-    // Activa el botón
     loginButton.disabled = false;
-    return true;
+
   }
 }
 
-function sendForm() {
-  if (validate()) {
-    // Si la validación es exitosa, procede a enviar el formulario al servidor
-    // Aquí puedes realizar acciones adicionales si es necesario antes de enviar el formulario
-    form.submit();
-    return true;
-  }else{
-      return false;
-  }
-}
+// function validateForm() {
+//   let user = document.getElementById("user").value;
+//   let pass = document.getElementById("pass").value;
+
+//   if (regexUser.test(user) && regexPass.test(pass)) {
+//     loginButton.disabled = false;
+//   } else {
+//     loginButton.disabled = true;
+//   }
+// }
+
+
+// function sendForm() {
+//   if (validateForm()) {
+//     // Si la validación es exitosa, procede a enviar el formulario al servidor
+//     // Aquí puedes realizar acciones adicionales si es necesario antes de enviar el formulario
+//     form.submit();
+//     return true;
+//   }else{
+//       return false;
+//   }
+// }
 
 // Función para generear una ventana nueva en al que el usuario pueda registrarse
 function showRegister() {
