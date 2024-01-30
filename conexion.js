@@ -90,7 +90,7 @@ app.post("/index", function (request, response) {
         console.log("salida mala");
         response.send("opcion desconocida");
     }
-    console.log("cerrando conexion")
+    console.log("cerrando conexion");
     dbConnection.end();
 });
 
@@ -135,7 +135,6 @@ app.post("/registro",function (request,response) {
                     const nAspiranteActualConCeros = nAspiranteActualString.padStart(4, '0');
                     console.log(nAspiranteActualConCeros);
                     const query=`INSERT INTO users (login_name, password, role) VALUES ('${nAspiranteActualConCeros}', '${pass}', 3)`;
-
                     dbConnection.query(query, (error, resultados) => {
                         if (error) {//si muestra error
                             console.error('Error en la consulta:', error);
