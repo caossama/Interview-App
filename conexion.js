@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const path = require('path');
 const app = express();
+const fs = require('fs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 //app.set('view engine', 'ejs');
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'HTML')));
 app.use(express.static(path.join(__dirname, 'CSS')));
 app.use(express.static(path.join(__dirname, 'MEDIA')));
+app.use(express.static(path.join(__dirname, 'JSON')));
 app.use(express.static(path.join(__dirname, 'JS'),{ 'Content-Type': 'application/javascript' }));
 
 
@@ -186,7 +188,44 @@ app.post("/registro",function (request,response) {
         });
     }
 });
+app.post("/simulacion", function(request,response){
+    console.log("dentro del post simulacion");
+    let takeQuestion= request.body.optionSimulacion;
+    console.log(takeQuestion);
+    const dbConnection = mysql.createConnection({
+        host: 'localhost',
+        user: 'invitado',
+        password: '0000',
+        database: 'interview app'
+    });
+    dbConnection.connect((err) => {
+        if (err) {
+            console.error('Error al conectar a la base de datos:', err);
+        } else {
+            console.log('Conexión exitosa a la base de datos');
+        }
+    });
+    const query = `select * from questions`;
+    dbConnection.query(query, (error, resultados) => {
+        if(error){
+            console.error('Error en la consulta:', error);
+            response.status(500).send('Error en la consulta');
+        }else{
+            console.log(resultados);
+            const datosJson = JSON.stringify(resultados, null, 2);
+            const rutaArchivo = '../proyectojs/JSON/questions.json';
+                    fs.writeFile(rutaArchivo, datosJson, 'utf-8', (err) => {
+                        if (err) {
+                            console.error('Error al escribir el archivo:', err);
+                          // Manejar el error según tu lógica
+                        } else {
+                            console.log('Archivo JSON guardado exitosamente.');
+                        }
+                    });  
+        }
+    });
 
+});
 app.listen(3000, function () {
     console.log("Servidor creado en http://localhost:3000/index");
 });

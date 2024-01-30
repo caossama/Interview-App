@@ -1,5 +1,6 @@
 const regexUser = /^\d{4}$/;
-const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
+const regexPass = /^\d{4}$/;
+//const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
 
 const form = document.getElementById("login-form");
 
