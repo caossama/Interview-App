@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'HTML')));
 app.use(express.static(path.join(__dirname, 'CSS')));
 app.use(express.static(path.join(__dirname, 'MEDIA')));
-app.use(express.static(path.join(__dirname, 'JSON')));
+//app.use(express.static(path.join(__dirname, 'JSON')));
 app.use(express.static(path.join(__dirname, 'JS'),{ 'Content-Type': 'application/javascript' }));
 
 
@@ -212,9 +212,14 @@ app.post("/simulacion", function(request,response){
             response.status(500).send('Error en la consulta');
         }else{
             console.log(resultados);
-            const datosJson = JSON.stringify(resultados, null, 2);
-            const rutaArchivo = '../proyectojs/JSON/questions.json';
-                    fs.writeFile(rutaArchivo, datosJson, 'utf-8', (err) => {
+            const dataJson = JSON.stringify(resultados, null, 2);
+            const directoryName="JSON";
+            const fileName="questions.json";
+            const pathFile = path.join(directoryName,fileName);
+            if (!fs.existsSync(directoryName)) {
+                fs.mkdirSync(directoryName);
+              }
+                    fs.writeFile(pathFile, dataJson, 'utf-8', (err) => {
                         if (err) {
                             console.error('Error al escribir el archivo:', err);
                           // Manejar el error según tu lógica
