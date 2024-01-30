@@ -1,5 +1,6 @@
 const regexUser = /^\d{4}$/;
-const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
+const regexPass = /^\d{4}$/;
+// const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
 
 const form = document.getElementById("login-form");
 
@@ -100,28 +101,26 @@ function showRegister() {
 
 // Obtener el elemento de video
 let video = document.getElementById("videoElement");
-let stream;
-let recordedChunks = [];
-let mediaRecorder;
+let stream; // Almacena la referencia al stream de la cámara
+let recordedChunks = []; // Almacena los fragmentos grabados
+let mediaRecorder; // Almacena un objeto MediaRecorder
+
+let recordedVideo = document.getElementById("recordedVideo");
 
 // Función para iniciar la cámara y la grabación
 function startInterview() {
-  // Verificar si el navegador soporta la API de medios y MediaRecorder
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
-    // Obtener acceso a la cámara
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then(function (streamObj) {
-        // Mostrar el stream de la cámara en el elemento de video
-        video.srcObject = streamObj;
-        // Guardar la referencia al stream para detenerlo más tarde
-        stream = streamObj;
+  localStorage.removeItem('recordedVideo');
 
-        // Iniciar la grabación
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then(function (streamObj) {
+        video.srcObject = streamObj;
+        stream = streamObj;
         startRecording();
       })
       .catch(function (error) {
-        console.error("Error al acceder a la cámara:", error);
+        console.error("Error al acceder a la cámara y micrófono:", error);
       });
   } else {
     console.error("Tu navegador no soporta la API de medios o MediaRecorder.");
@@ -130,45 +129,59 @@ function startInterview() {
 
 // Función para iniciar la grabación
 function startRecording() {
-  recordedChunks = []; // Limpiar los chunks grabados
-
-  // Crear un objeto MediaRecorder y asociarlo con el stream de video
-  let mediaRecorder = new MediaRecorder(stream);
-
-  // Manejar el evento de datos disponibles
+  recordedChunks = [];
+  // Se asigna el objeto MediaRecorder a la variable global
+  mediaRecorder = new MediaRecorder(stream);
   mediaRecorder.ondataavailable = function (e) {
+    console.log('Datos disponibles:', e.data.size);
     if (e.data.size > 0) {
       recordedChunks.push(e.data);
     }
   };
 
-  // Manejar el evento de finalización de la grabación
   mediaRecorder.onstop = function () {
-    // Convertir los chunks grabados en un blob y guardarlo en localStorage
+    console.log('Grabación detenida');
     let recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+    console.log('Tamaño del Blob:', recordedBlob.size);
     let recordedUrl = URL.createObjectURL(recordedBlob);
-
+  
     // Guardar el URL del video en el localStorage
     localStorage.setItem('recordedVideo', recordedUrl);
+  
+    // Mostrar el video procesado
+    processAndShowVideo();
   };
 
-  // Iniciar la grabación
   mediaRecorder.start();
 }
 
 // Función para detener la cámara y la grabación
 function stopInterview() {
-  // Verificar si hay un stream para detener
   if (stream) {
-    // Detener cada track del stream
     stream.getTracks().forEach((track) => track.stop());
-    // Limpiar la referencia al stream
     stream = null;
 
-    // Detener la grabación
     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
       mediaRecorder.stop();
     }
   }
-  console.log(localStorage.getItem('recordedVideo'));
 }
+
+function processAndShowVideo() {
+  console.log(localStorage.getItem('recordedVideo'));
+
+  if (localStorage.getItem('recordedVideo')) {
+    // Actualizar el nuevo elemento de video con el video grabado
+    recordedVideo.src = localStorage.getItem('recordedVideo');
+    recordedVideo.onloadedmetadata = function() {
+      console.log('Metadata cargada');
+      recordedVideo.play().catch(function(error) {
+        console.error('Error al intentar reproducir el video grabado:', error);
+      });
+    };
+  }
+}
+
+
+
+
