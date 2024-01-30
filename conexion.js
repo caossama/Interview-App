@@ -83,6 +83,7 @@ app.post("/index", function (request, response) {
             }
         });
     } else if(action === "REGISTRO") {//si el valor de la accion en el form del index.html es registro
+        
         console.log("lanzando registro");
         response.redirect('/registro.html');
     }else{
@@ -135,14 +136,25 @@ app.post("/registro",function (request,response) {
                     const nAspiranteActualString = String(nAspiranteActual);
                     const nAspiranteActualConCeros = nAspiranteActualString.padStart(4, '0');
                     console.log(nAspiranteActualConCeros);
-                    const query=`INSERT INTO users (username, password, role) VALUES ('${nAspiranteActualConCeros}', '${pass}', 3)`;
+                    const query=`INSERT INTO users (login_name, password, role) VALUES ('${nAspiranteActualConCeros}', '${pass}', 3)`;
+
+
 
                     dbConnection.query(query, (error, resultados) => {
                         if (error) {//si muestra error
                             console.error('Error en la consulta:', error);
                             response.status(500).send('Error en la consulta');
                         } else {
-                
+                            console.log(resultados);
+                            const queryConsulta = "select * from users"
+                            dbConnection.query(query,(error,resultados)=>{
+                                if(error){
+                                    console.error('Error en la consulta:', error);
+                                    response.status(500).send('Error en la consulta');
+                                }else{
+                                    console.log(resultados);
+                                }
+                            })
                         }
                     });
 
