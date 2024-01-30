@@ -13,7 +13,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'HTML')));
 app.use(express.static(path.join(__dirname, 'CSS')));
 app.use(express.static(path.join(__dirname, 'MEDIA')));
-app.use(express.static(path.join(__dirname, 'JSON')));
+//app.use(express.static(path.join(__dirname, 'JSON')));
+app.use('/JSON', express.static(path.join(__dirname, 'JSON')));
 app.use(express.static(path.join(__dirname, 'JS'),{ 'Content-Type': 'application/javascript' }));
 
 
@@ -188,6 +189,7 @@ app.post("/registro",function (request,response) {
         });
     }
 });
+
 app.post("/simulacion", function(request,response){
     console.log("dentro del post simulacion");
     let takeQuestion= request.body.optionSimulacion;
@@ -210,22 +212,65 @@ app.post("/simulacion", function(request,response){
         if(error){
             console.error('Error en la consulta:', error);
             response.status(500).send('Error en la consulta');
-        }else{
+        }else {
             console.log(resultados);
-            const datosJson = JSON.stringify(resultados, null, 2);
-            const rutaArchivo = 'questions.json';
-                    fs.writeFile(rutaArchivo, datosJson, 'utf-8', (err) => {
-                        if (err) {
-                            console.error('Error al escribir el archivo:', err);
-                          // Manejar el error según tu lógica
-                        } else {
-                            console.log('Archivo JSON guardado exitosamente.');
-                        }
-                    });  
+            const dataJson = JSON.stringify(resultados, null, 2);
+            const directoryName = "JSON";
+            const fileName = "questions.json";
+            const pathFile = path.join(__dirname, directoryName, fileName);
+        
+            if (!fs.existsSync(path.join(__dirname, directoryName))) {
+                fs.mkdirSync(path.join(__dirname, directoryName), { recursive: true });
+            }
+        
+            fs.writeFile(pathFile, dataJson, 'utf-8', (err) => {
+                if (err) {
+                    console.error('Error al escribir el archivo:', err);
+                } else {
+                    console.log('Archivo JSON guardado exitosamente.');
+                    const htmlToSend = `
+                        <!DOCTYPE html>
+                        <html lang="es">
+                        <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <link rel="stylesheet" href="style.css">
+                        <title>Entrevista</title>
+                        </head>
+                        <body>
+                        <!-- Comienzo la estructura de la entrevista -->
+                        <form id="form-sim" action="/simulacion" method="post" class="container-sim">
+                            <div class="faq">
+                            <input type="text" id="001">
+                            <input type="button" id="001" value="AGREGAR PREGUNTA">
+                            <input id="hidden" type="hidden" value="load">
+                            <input type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
+                            </div>
+                        
+                            <div id="question-box" class="question"></div>
+                        
+                            <div class="interview"><video id="videoElement" width="100%" height="100%" autoplay></video></div>
+                        
+                            <video id="recordedVideo" width="100%" height="100%" controls></video>
+                        
+                            <div class="menu">
+                            <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
+                            <input id="stopButton" type="button" value="DETENER GRABACIÓN" onclick="stopInterview()">
+                            </div>
+                        </form>
+                        
+                        
+                        <script src="script.js"></script>
+                        </body>
+                        </html>
+                    `;
+                    response.send(htmlToSend);
+                }
+            });
         }
     });
-
 });
+
 app.listen(3000, function () {
     console.log("Servidor creado en http://localhost:3000/index");
 });

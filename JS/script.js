@@ -185,3 +185,40 @@ function processAndShowVideo() {
 
 
 
+function loadJSON(callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.overrideMimeType("application/json");
+  xhr.open('GET', '../JSON/questions.json', true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4 && xhr.status == "200") {
+      callback(JSON.parse(xhr.responseText));
+    }
+  };
+  xhr.send(null);
+}
+
+
+
+function getRandomQuestion() {
+  setInterval(loadJSON(function (questionsJSON) {
+    const randomIndex = Math.floor(Math.random() * questionsJSON.length);
+
+    const randomQuestion = questionsJSON[randomIndex];
+
+    document.getElementById('question-box').textContent = randomQuestion.question;
+
+    console.log(randomQuestion.question);
+  }), 5000);
+}
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  let inputHidden = document.getElementById('hidden');
+  if (inputHidden.value === "no-load") {
+
+  } else {
+    getRandomQuestion();
+  }
+});
