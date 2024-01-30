@@ -25,7 +25,7 @@ app.get('/index', function (request, response) {
 });
 
 
-
+//recibimos valores del form en un post
 app.post("/index", function (request, response) {
     console.log("dentro del post");
     //capturamos valores del form
@@ -70,7 +70,7 @@ app.post("/index", function (request, response) {
                         console.log("generando vista generador");
                     }else{
                         if(resultados[0].login_name==user&&resultados[0].password==pass){//comprobamos si el usuario y su clave son equivalentes
-                            response.redirect('/simulacion.html');
+                            response.redirect('/simulacion.html');//iniciando la simulacion de entrevista
                         }else{
                             console.log("clave  invalida");
                             response.redirect('/index.html');
@@ -82,15 +82,14 @@ app.post("/index", function (request, response) {
                 }
             }
         });
-    } else if(action === "REGISTRO") {//si el valor es registro
-
-    console.log("registrando");
-        
-        response.redirect('/index.html');
+    } else if(action === "REGISTRO") {//si el valor de la accion en el form del index.html es registro
+        console.log("lanzando registro");
+        response.redirect('/registro.html');
     }else{
         console.log("salida mala");
         response.send("opcion desconocida");
     }
+    console.log("cerrando conexion")
     dbConnection.end();
 });
 
@@ -98,7 +97,7 @@ app.post("/index", function (request, response) {
 
 app.post("/registro",function (request,response) {
     console.log("dentro del post Resgistro");
-
+    //capturamos las variables del post
     let action = request.body.optionRegistro;
     let pass=request.body.pass;
     //creamos conexion a la base de datos
@@ -113,11 +112,13 @@ app.post("/registro",function (request,response) {
         if (err) {
             console.error('Error al conectar a la base de datos:', err);
         } else {
-            console.log('Conexión exitosa a la base de datos');
+            console.log('Conexión exitosa a la base de datos desde registrarse');
         }
     });
 
-    if(action){
+    console.log(action);
+    console.log(pass);
+    if(action=="REGISTRARSE"){
         const query = `SELECT * FROM users ORDER BY id DESC LIMIT 1`;
         console.log(query);
         dbConnection.query(query, (error, resultados) => {
@@ -125,14 +126,45 @@ app.post("/registro",function (request,response) {
                 console.error('Error en la consulta:', error);
                 response.status(500).send('Error en la consulta');
             }else{
-                if(resultados.length==0){
+                if(resultados.length==1){
+                    console.log(resultados[0]);
+                    let nAspiranteUltimo=parseInt(resultados[0].login_name);
+                    console.log("nAspiranteUltimo   "+nAspiranteUltimo);
+                    console.log(typeof(nAspiranteUltimo));
+                    let nAspiranteActual = nAspiranteUltimo+1;
+                    const nAspiranteActualString = String(nAspiranteActual);
+                    const nAspiranteActualConCeros = nAspiranteActualString.padStart(4, '0');
+                    console.log(nAspiranteActualConCeros);
+                    const query=`INSERT INTO users (username, password, role) VALUES ('${nAspiranteActualConCeros}', '${pass}', 3)`;
+
+                    dbConnection.query(query, (error, resultados) => {
+                        if (error) {//si muestra error
+                            console.error('Error en la consulta:', error);
+                            response.status(500).send('Error en la consulta');
+                        } else {
+                
+                        }
+                    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 }
             }
         });
-
     }
-    
 });
 
 

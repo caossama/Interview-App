@@ -54,17 +54,17 @@ function sendForm() {
 }
 
 // Función para generear una ventana nueva en al que el usuario pueda registrarse
-function showRegister() {
-  const screenWidth = screen.width;
-  const screenHeight = screen.height;
+// function showRegister() {
+//   const screenWidth = screen.width;
+//   const screenHeight = screen.height;
 
-  const centerX = (screenWidth - 500) / 2;
-  const centerY = (screenHeight - 400) / 2;
+//   const centerX = (screenWidth - 500) / 2;
+//   const centerY = (screenHeight - 400) / 2;
 
-  let url = "registro.html";
-  let newWindow = window.open(url, "_blank", "width=500,height=400");
-  newWindow.moveTo(centerX, centerY);
-}
+//   let url = "registro.html";
+//   let newWindow = window.open(url, "_blank", "width=500,height=400");
+//   newWindow.moveTo(centerX, centerY);
+// }
 
 // Obtener el elemento de video
 let video = document.getElementById("videoElement");
