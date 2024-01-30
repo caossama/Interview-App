@@ -52,10 +52,8 @@ function sendForm() {
     // Aquí puedes realizar acciones adicionales si es necesario antes de enviar el formulario
     form.submit();
     return true;
-  } else {
-    // Muestra un mensaje de alerta cuando se intente hacer clic en el botón desactivado
-    alert("Por favor, complete los campos correctamente antes de hacer clic en LOGIN.");
-    return false;
+  }else{
+      return false;
   }
 }
 
@@ -67,10 +65,36 @@ function showRegister() {
   const centerX = (screenWidth - 500) / 2;
   const centerY = (screenHeight - 400) / 2;
 
+  // Crear un fondo transparente que cubra toda la pantalla
+  const overlay = document.createElement("div");
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)"; // Fondo semi-transparente
+  overlay.style.zIndex = "9999"; // Asegurar que esté por encima del resto del contenido
+  document.body.appendChild(overlay);
+
+  // Abrir la ventana de registro
   let url = "registro.html";
-  let newWindow = window.open(url, "_blank", "width=500,height=400");
-  newWindow.moveTo(centerX, centerY);
+  let newWindow = window.open(url, "_blank", "width=500,height=400,left=" + centerX + ",top=" + centerY);
+
+  // Mover la ventana al centro
+  if (newWindow) {
+    newWindow.moveTo(centerX, centerY);
+  }
+
+  // Verificar continuamente si la ventana de registro está cerrada
+  const checkClosed = setInterval(function () {
+    if (newWindow.closed) {
+      clearInterval(checkClosed); // Detener la verificación continua
+      document.body.removeChild(overlay); // Eliminar el fondo transparente al cerrar la ventana de registro
+    }
+  }, 1000);
 }
+
+
 
 // Obtener el elemento de video
 let video = document.getElementById("videoElement");

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../CSS/style.css">
+  <link rel="stylesheet" href="style.css">
   <script src="script.js"></script>
   <title>InterviewApp</title>
 </head>
@@ -11,19 +11,20 @@
 <!-- Comienzo la estructura del login -->
   <div class="main">
     <div class="logo-container">
-      <img class="logo" src="../MEDIA/logo.webp" alt="Logotipo empresa">
+      <img class="logo" src="logo.webp" alt="Logotipo empresa">
     </div>
 
-    <form action="index" method="post" class="login-form" id="login-form">
-      <label class="user" for=""><span>USUARIO</span><input id="user" name="user" type="text" autocomplete="off" onsubmit="return sendForm()" oninput="userValidate()" ></label>
+    <form action="index" method="post" class="login-form">
+      <label class="user" for=""><span>USUARIO</span><input id="user" name="user" type="text" autocomplete="off" required onsubmit="return sendForm()" oninput="userValidate()"></label>
       <p class="validate-text" id="user-validation"></p>
 
-      <label class="pass" for=""><span>PASSWORD</span><input id="pass" name="pass" type="password" autocomplete="off" oninput="passValidate()" ></label> 
+      <label class="pass" for=""><span>PASSWORD</span><input id="pass" name="pass" type="password" autocomplete="off" required oninput="passValidate()"></label> 
+
       <p class="validate-text" id="pass-validation"></p>
 
-      <input class="login" type="submit" value="LOGIN" name="option" onclick="sendForm()" /> 
+      <input class="login" type="submit" value="LOGIN" name="optionIndex" onclick="sendForm()"/>
 
-      <input class="register" type="submit" value="REGISTRO" name="option" onclick="showRegister()" />
+      <input class="register" type="button" value="REGISTRO" name="optionIndex" onclick="showRegister()" />
     </form>
   </div>
 </body>

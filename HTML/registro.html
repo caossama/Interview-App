@@ -10,10 +10,12 @@
   <h1>Bienvenido Aspirante</h1> 
   <!-- TODO Falta meter arriba una manera para insertarle el número del aspirante -->
   <h2>Por favor, inserte una contraseña:</h2>
+  <form action="registro" method="post">
+    <input class="password-register" name="pass" type="password">
 
-  <input class="password-register" type="password">
-
-  <input class="send-pass" type="submit" value="REGISTRARSE">
+    <input class="send-pass" name="optionRegistro" type="submit" value="REGISTRARSE">
+  </form>
+  
 
   <script src="script.js"></script>
 </body>
