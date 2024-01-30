@@ -145,9 +145,7 @@ app.post("/registro",function (request,response) {
                             response.status(500).send('Error en la consulta');
                         } else {
                                 console.log(resultados);
-                                const scriptToSend=`<script>function closeWindow() {
-                                    window.open('', '_self', '');
-                                    window.close();}</script>`;
+                                const inputToSend=`<input type="hidden" onload="func" ></input>`;
                             response.send(scriptToSend);
                         }
                     });
