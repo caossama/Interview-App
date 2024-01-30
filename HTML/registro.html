@@ -13,10 +13,15 @@
   <form action="registro" method="post">
     <input class="password-register" name="pass" type="password">
 
-    <input class="send-pass" name="optionRegistro" type="submit" value="REGISTRARSE">
+    <input id="register-button" class="send-pass" name="optionRegistro" type="submit" value="REGISTRARSE">
   </form>
   
 
   <script src="script.js"></script>
+  <script>
+    document.getElementById("register-button").addEventListener("click", function() {
+      window.close();
+    });
+  </script>
 </body>
 </html>

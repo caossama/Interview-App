@@ -62,8 +62,8 @@ function showRegister() {
   const screenWidth = screen.width;
   const screenHeight = screen.height;
 
-  const centerX = (screenWidth - 500) / 2;
-  const centerY = (screenHeight - 400) / 2;
+  const centerX = (screenWidth - 600) / 2;
+  const centerY = (screenHeight - 500) / 2;
 
   // Crear un fondo transparente que cubra toda la pantalla
   const overlay = document.createElement("div");
@@ -78,7 +78,7 @@ function showRegister() {
 
   // Abrir la ventana de registro
   let url = "registro.html";
-  let newWindow = window.open(url, "_blank", "width=500,height=400,left=" + centerX + ",top=" + centerY);
+  let newWindow = window.open(url, "_blank", "width=600,height=500,left=" + centerX + ",top=" + centerY);
 
   // Mover la ventana al centro
   if (newWindow) {
