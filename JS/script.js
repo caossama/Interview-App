@@ -285,24 +285,24 @@ function getRandomQuestion() {
 
 // Función para enviar datos al servidor
 function sendData() {
-  // Obtengo la pregunta almacenada en el localStorage
-  let question = localStorage.getItem('pregunta');
-  // Obtengo el nombre de inicio de sesión almacenado en el localStorage
-  let login_name = localStorage.getItem('login_name');
-  // Creo un objeto con los datos a enviar
-  let dataQ = {
-    pregunta: question,
-    login_name: login_name
-  };
-  // Realizo una solicitud POST al servidor
-  fetch('/question-user', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(dataQ)
-  })
-  .then(response => response.json())
+let question = localStorage.getItem('pregunta');
+let login_name= localStorage.getItem('login_name');
+
+// Crear un objeto con los datos
+let dataQ = {
+  pregunta: question,
+  login_name: login_name
+};
+
+// Realizar una solicitud POST al servidor
+fetch('/question-user', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(dataQ)
+})
+  // .then(response => response.json())
   .then(data => {
     // Manejar la respuesta del servidor si es necesario
     console.log(data);
