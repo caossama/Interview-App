@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Vista Generador</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <form action="/back">
+        <img id="back-login" src="arrow.svg" alt="login">
+        <input id="back-login2" type="submit">
+    </form>
+
     <div id="gen">
         <p>Bienvenido generador, por favor, agregue preguntas</p>
         <form id="gen-quest" method="POST" action="/generador">
             <input id="gen-txt" type="text" name="textQuestion">
             <input id="gen-send" type="submit" name="sendQuestion" value="Send">
-        </form>
-        <form action="/generador" method="POST">
-            <input id="gen-login" type="submit" name="watchQuestions" value="Volver al Login">
         </form>
     </div>
 </body>
