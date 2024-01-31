@@ -143,35 +143,26 @@ function startRecording() {
     console.log('Grabación detenida');
     let recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
     console.log('Tamaño del Blob:', (recordedBlob.size / (1024 * 1024)).toFixed(2), 'MB');
-    let recordedUrl = URL.createObjectURL(recordedBlob);
   
-    // Guardar la URL del video en el localStorage
-    localStorage.setItem('recordedVideo', recordedUrl);
-
-    // Convertir de nuevo la URL en Blob
-    fetch(recordedUrl)
-      .then(response => response.blob())
-      .then(blob => {
-        // Crear un formulario y adjuntar el Blob como un campo de archivo
-        let formData = new FormData();
-        formData.append('videoFile', blob);
-
-        // Realizar una solicitud al servidor
-        fetch('/upload', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Respuesta del servidor:', data);
-        })
-        .catch(error => {
-          console.error('Error al enviar el video al servidor:', error);
-        });
-      })
-      .catch(error => {
-        console.error('Error al obtener el Blob del video:', error);
-      });
+    // Guardar el Blob del video en el localStorage
+    localStorage.setItem('recordedVideo', recordedBlob);
+  
+    // Crear un formulario y adjuntar el Blob como un campo de archivo
+    let formData = new FormData();
+    formData.append('videoFile', recordedBlob, 'video.webm');
+  
+    // Realizar una solicitud al servidor
+    fetch('/upload', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Respuesta del servidor:', data);
+    })
+    .catch(error => {
+      console.error('Error al enviar el video al servidor:', error);
+    });
 
     // let blobData = new Blob(["Contenido"], {type: "application/octet-stream"});
     // let hiddenRecord = document.getElementById('record');
