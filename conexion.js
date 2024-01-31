@@ -5,8 +5,12 @@ const bodyParser = require('body-parser')
 const path = require('path');
 const app = express();
 const fs = require('fs');
-
+const multer = require('multer');
+const { type } = require('os');
+const storage = multer.memoryStorage(); // Almacenar archivos en memoria
+const upload = multer({ storage: storage });
 app.use(bodyParser.urlencoded({extended: true}));
+
 //app.set('view engine', 'ejs');
 // Configurar la ubicación de las vistas con ruta relativa
 //app.set('views', path.join(__dirname, 'HTML'));
@@ -275,7 +279,7 @@ app.post("/simulacion", function(request,response){
                 });
             }
         });
-    } else if(action=="DETENER GRABACIÓN"){
+    } else if(action=="DETENER saasdGRABACIÓN"){
         let recordedBlob=request.body.record;
         let userID = request.body.user_id;
         let question = request.body.question;
@@ -283,9 +287,38 @@ app.post("/simulacion", function(request,response){
         console.log(typeof(recordedBlob));
         console.log(question);
         console.log("llego hasta aqui")
-        response.redirect("/simulacion.html");
+        //response.redirect("/simulacion.html");
     }
 });
+app.post("/upload", upload.single('videoFile'), (request,response)=>{
+    console.log("estamso en prueba")
+    const videoFile = request.file;
+    console.log(typeof(videoFile));
+    
+    const dbConnection = mysql.createConnection({
+        host: 'localhost',
+        user: 'invitado',
+        password: '0000',
+        database: 'interview app'
+    });
+    //comprobamos que la conexion funciona o manda error
+    dbConnection.connect((err) => {
+        if (err) {
+            console.error('Error al conectar a la base de datos:', err);
+        } else {
+            console.log('Conexión exitosa a la base de datos');
+        }
+    });
+    
+    dbConnection.query('INSERT INTO interviews (interview) VALUES (?)', [videoFile], (error, results, fields)=> {
+        if (error) throw error;
+        console.log('Registro insertado con éxito:', results.insertId);
+    });
+
+
+    // Enviar una respuesta al cliente (puede ser cualquier cosa que quieras enviar)
+    response.json({ status: 'OK', message: 'Solicitud recibida con éxito' });
+}); 
 
 app.listen(3000, function () {
     console.log("Servidor creado en http://localhost:3000/index");
