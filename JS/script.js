@@ -142,26 +142,14 @@ function startRecording() {
   mediaRecorder.onstop = function () {
     console.log('Grabación detenida');
     let recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-    console.log('Tamaño del Blob:', (recordedBlob.size / (1024 * 1024)).toFixed(2), 'MB');
+    console.log('Tamaño del Blob:', recordedBlob.size);
     let recordedUrl = URL.createObjectURL(recordedBlob);
   
-    // Guardar la URL del video en el localStorage
+    // Guardar el URL del video en el localStorage
     localStorage.setItem('recordedVideo', recordedUrl);
-
-    let blobData = new Blob(["Contenido"], {type: "application/octet-stream"});
-    let hiddenRecord = document.getElementsByName('record');
-    let file = new File([blobData], 'video.blob');
-
-    let formData = new FormData();
-    formData.append('record', file);
-
-    hiddenRecord.files = [file];
-
-    console.log('FormData: ', formData);
   
-    
     // Mostrar el video procesado
-    processAndShowVideo();
+    //processAndShowVideo();
   };
 
   mediaRecorder.start();
@@ -191,11 +179,6 @@ function processAndShowVideo() {
         console.error('Error al intentar reproducir el video grabado:', error);
       });
     };
-    let keys = Object.keys(localStorage);
-
-    keys.forEach(function(key) {
-      console.log(key + ":" + localStorage.getItem(key));
-    });
   }
 }
 
@@ -217,17 +200,15 @@ function loadJSON(callback) {
 
 
 function getRandomQuestion() {
-  loadJSON(function (questionsJSON) {
+  setInterval(loadJSON(function (questionsJSON) {
     const randomIndex = Math.floor(Math.random() * questionsJSON.length);
+
     const randomQuestion = questionsJSON[randomIndex];
 
     document.getElementById('question-box').textContent = randomQuestion.question;
 
-    const storedQuestion = localStorage.setItem("pregunta", JSON.stringify(randomQuestion));
-    console.log(storedQuestion);
-
-    // console.log(randomQuestion.question);
-  });
+    console.log(randomQuestion.question);
+  }), 5000);
 }
 
 
