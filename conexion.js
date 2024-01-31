@@ -9,7 +9,6 @@ const multer = require('multer');
 const { type } = require('os');
 const storage = multer.memoryStorage(); // Almacenar archivos en memoria
 const upload = multer({ storage: storage });
-app.use(bodyParser.urlencoded({extended: true}));
 
 //app.set('view engine', 'ejs');
 // Configurar la ubicación de las vistas con ruta relativa
@@ -20,8 +19,9 @@ app.use(express.static(path.join(__dirname, 'MEDIA')));
 //app.use(express.static(path.join(__dirname, 'JSON')));
 app.use('/JSON', express.static(path.join(__dirname, 'JSON')));
 app.use(express.static(path.join(__dirname, 'JS'),{ 'Content-Type': 'application/javascript' }));
-
-
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.json());
 
 //cargamos el index.
 app.get('/index', function (request, response) {
@@ -167,7 +167,8 @@ app.post("/registro",function (request,response) {
                                         <meta charset="UTF-8">
                                         <meta http-equiv="X-UA-Compatible" content="IE=edge">
                                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                        <title>Tu Página</title>
+                                        <link rel="stylesheet" href="style.css">
+                                        <title>Registro</title>
                                         <script>
                                             function mostrarMensaje() {
                                                 var confirmacion = confirm('¿Seguro que quieres salir?');
@@ -177,11 +178,11 @@ app.post("/registro",function (request,response) {
                                             }
                                         </script>
                                     </head>
-                                    <body>
+                                    <body id="register">
                                         <p>Bienvenido Aspirante, tu número de usuario es: ${loginName}</p>
                                         
                                         <!-- Botón que muestra el mensaje -->
-                                        <button onclick="mostrarMensaje()">Cerrar Ventana</button>
+                                        <button id="confirm-button" onclick="mostrarMensaje()">CONFIRMAR</button>
                                     </body>
                                     </html>
                                     `;
@@ -237,62 +238,56 @@ app.post("/simulacion", function(request,response){
                         console.log('Archivo JSON guardado exitosamente.');
                         const htmlToSend = `
                         <!DOCTYPE html>
-                            <html lang="es">
-                            <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <link rel="stylesheet" href="style.css">
-                            <title>Entrevista</title>
-                            </head>
-                            <body>
-                            <!-- Comienzo la estructura de la entrevista -->
-                            <div id="form-sim" action="/simulacion" method="post" class="container-sim">
-                                <form action="/simulacion" method="post" class="faq">
-                                <input type="text" id="001">
-                                <input type="button" id="001" value="AGREGAR PREGUNTA">
-                                <input id="hidden" type="hidden" value="load">
-                                <input type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
-                                </form>
+                        <html lang="es">
+                        <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <link rel="stylesheet" href="style.css">
+                        <title>Entrevista</title>
+                        </head>
+                        <body>
+                        <!-- Comienzo la estructura de la entrevista -->
+                        <div id="form-sim" class="container-sim">
+                            <form class="faq" action="/simulacion" method="post">
+                            <input id="hidden" type="hidden" value="load">
+                            <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
+                            </form>
 
-                                <div id="question-box" class="question"></div>
+                            <div id="question-box" class="question"></div>
 
-                                <div class="interview"><video id="videoElement" width="100%" height="100%" autoplay></video></div>
+                            <div class="interview"><video id="videoElement" width="100%" height="100%" autoplay></video></div>
 
-                                <video id="recordedVideo" width="100%" height="100%" controls></video>
+                            <!-- <video id="recordedVideo" width="100%" height="100%" controls></video> -->
 
-                                <form action="/simulacion" method="post" class="menu">
-                                <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
-                                <input type="file" name="record" value="record">
-                                <input id="stopButton" type="submit" name="optionSimulacion" value="DETENER GRABACIÓN" onclick="stopInterview()">
-                                <input type="hidden" name="question" value="question">
-                                <input type="hidden" name="user-id" value="user-id">
-                                </form>
-                            </div>
-                            
-
-                            <script src="script.js"></script>
-                            </body>
-                            </html> 
+                            <form class="menu" action="/simulacion" method="post" enctype="multipart/form-data">
+                            <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
+                            <input id="record" type="file" name="record" value="record">
+                            <input id="stopButton" type="submit" value="DETENER GRABACIÓN" onclick="stopInterview()">
+                            </form>
+                            <input id="inputQuestion" type="hidden" name="question" value="question">
+                            <input type="hidden" name="user-id" value="user-id">
+                        </div>
+                        
+                        <script src="script.js"></script>
+                        </body>
+                        </html>
                         `;
                         response.send(htmlToSend);
                     }
                 });
             }
         });
-    } else if(action=="DETENER saasdGRABACIÓN"){
-        let recordedBlob=request.body.record;
-        let userID = request.body.user_id;
+    } else if(action=="DETENER GRABACIÓN"){
+
         let question = request.body.question;
-        console.log(recordedBlob.value);
-        console.log(typeof(recordedBlob));
         console.log(question);
-        console.log("llego hasta aqui")
-        //response.redirect("/simulacion.html");
+
+        console.log("llego hasta aqui");
+        response.redirect("/simulacion.html");
     }
 });
 
 app.post("/upload", upload.single('videoFile'), (request, response) => {
-    console.log("estamos en prueba");
     const videoFile = request.file;
 
     const dbConnection = mysql.createConnection({
@@ -318,6 +313,36 @@ app.post("/upload", upload.single('videoFile'), (request, response) => {
     response.json({ status: 'OK', message: 'Solicitud recibida con éxito' });
 });
 
+app.post("/question-user", function(request, response) {
+    console.log("Entrando en question-user");
+    const question = request.body.pregunta;
+    console.log(question);
+    response.send({ status: 'success' });
+});
+
 app.listen(3000, function () {
     console.log("Servidor creado en http://localhost:3000/index");
+});
+
+app.post("/generador",function (request, response) {
+    console.log("dentro del post");
+    //capturamos valores del form
+    // let action = request.body.optionIndex;
+    // let user = String(request.body.user);
+    // let pass = String(request.body.pass);
+    //creamos conexion a la base de datos
+    const dbConnection = mysql.createConnection({
+        host: 'localhost',
+        user: 'invitado',
+        password: '0000',
+        database: 'interview app'
+    });
+    //comprobamos que la conexion funciona o manda error
+    dbConnection.connect((err) => {
+        if (err) {
+            console.error('Error al conectar a la base de datos:', err);
+        } else {
+            console.log('Conexión exitosa a la base de datos');
+        }
+    });
 });
