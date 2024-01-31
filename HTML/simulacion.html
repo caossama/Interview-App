@@ -8,13 +8,13 @@
 </head>
 <body>
   <!-- Comienzo la estructura de la entrevista -->
-  <form id="form-sim" action="/simulacion" method="post" class="container-sim">
-    <div class="faq">
-      <input type="text" id="001">
-      <input type="button" id="001" value="AGREGAR PREGUNTA">
+  <div id="form-sim" class="container-sim">
+    <form class="faq" action="/simulacion" method="post">
+      <input type="text">
+      <input type="button" value="AGREGAR PREGUNTA">
       <input id="hidden" type="hidden" value="no-load">
       <input type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
-    </div>
+    </form>
 
     <div id="question-box" class="question"></div>
 
@@ -22,14 +22,14 @@
 
     <video id="recordedVideo" width="100%" height="100%" controls></video>
 
-    <div class="menu">
+    <form class="menu" action="/simulacion" method="post">
       <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
-      <input type="file" name="record" value="record">
+      <input id="record" type="file" name="record" value="record">
       <input id="stopButton" type="button" value="DETENER GRABACIÓN" onclick="stopInterview()">
       <input type="hidden" name="question" value="question">
-      <input type="hidder" name="user-id" value="user-id">
-    </div>
-  </form>
+      <input type="hidden" name="user-id" value="user-id">
+    </form>
+  </div>
   
 
   <script src="script.js"></script>

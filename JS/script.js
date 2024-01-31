@@ -148,20 +148,46 @@ function startRecording() {
     // Guardar la URL del video en el localStorage
     localStorage.setItem('recordedVideo', recordedUrl);
 
-    let blobData = new Blob(["Contenido"], {type: "application/octet-stream"});
-    let hiddenRecord = document.getElementsByName('record');
-    let file = new File([blobData], 'video.blob');
+    // Convertir de nuevo la URL en Blob
+    fetch(recordedUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        // Crear un formulario y adjuntar el Blob como un campo de archivo
+        let formData = new FormData();
+        formData.append('videoFile', blob);
 
-    let formData = new FormData();
-    formData.append('record', file);
+        // Realizar una solicitud al servidor
+        fetch('/upload', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Respuesta del servidor:', data);
+        })
+        .catch(error => {
+          console.error('Error al enviar el video al servidor:', error);
+        });
+      })
+      .catch(error => {
+        console.error('Error al obtener el Blob del video:', error);
+      });
 
-    hiddenRecord.files = [file];
+    // let blobData = new Blob(["Contenido"], {type: "application/octet-stream"});
+    // let hiddenRecord = document.getElementById('record');
+    // let file = new File([blobData], 'video.blob');
 
-    console.log('FormData: ', formData);
+    // let formData = new FormData();
+    // formData.append('record', file);
+
+    // hiddenRecord.files = [file];
+
+    // console.log('FormData: ', formData);
   
     
     // Mostrar el video procesado
-    processAndShowVideo();
+    // processAndShowVideo();
+
   };
 
   mediaRecorder.start();
