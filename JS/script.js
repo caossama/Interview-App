@@ -164,21 +164,7 @@ function startRecording() {
       console.error('Error al enviar el video al servidor:', error);
     });
 
-    // let blobData = new Blob(["Contenido"], {type: "application/octet-stream"});
-    // let hiddenRecord = document.getElementById('record');
-    // let file = new File([blobData], 'video.blob');
-
-    // let formData = new FormData();
-    // formData.append('record', file);
-
-    // hiddenRecord.files = [file];
-
-    // console.log('FormData: ', formData);
-  
-    
-    // Mostrar el video procesado
     // processAndShowVideo();
-
   };
 
   mediaRecorder.start();

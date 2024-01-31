@@ -5,8 +5,12 @@ const bodyParser = require('body-parser')
 const path = require('path');
 const app = express();
 const fs = require('fs');
-
+const multer = require('multer');
+const { type } = require('os');
+const storage = multer.memoryStorage(); // Almacenar archivos en memoria
+const upload = multer({ storage: storage });
 app.use(bodyParser.urlencoded({extended: true}));
+
 //app.set('view engine', 'ejs');
 // Configurar la ubicación de las vistas con ruta relativa
 //app.set('views', path.join(__dirname, 'HTML'));
@@ -194,14 +198,110 @@ app.post("/registro",function (request,response) {
 
 app.post("/simulacion", function(request,response){
     console.log("dentro del post simulacion");
-    let takeQuestion= request.body.optionSimulacion;
-    console.log(takeQuestion);
+    let action= request.body.optionSimulacion;
+    console.log(action);
+    if(action=="GENERAR PREGUNTA"){
+        const dbConnection = mysql.createConnection({
+            host: 'localhost',
+            user: 'invitado',
+            password: '0000',
+            database: 'interview app'
+        });
+        dbConnection.connect((err) => {
+            if (err) {
+                console.error('Error al conectar a la base de datos:', err);
+            } else {
+                console.log('Conexión exitosa a la base de datos');
+            }
+        });
+        const query = `select * from questions`;
+        dbConnection.query(query, (error, resultados) => {
+            if(error){
+                console.error('Error en la consulta:', error);
+                response.status(500).send('Error en la consulta');
+            }else {
+                console.log(resultados);
+                const dataJson = JSON.stringify(resultados, null, 2);
+                const directoryName = "JSON";
+                const fileName = "questions.json";
+                const pathFile = path.join(__dirname, directoryName, fileName);
+            
+                if (!fs.existsSync(path.join(__dirname, directoryName))) {
+                    fs.mkdirSync(path.join(__dirname, directoryName), { recursive: true });
+                }
+            
+                fs.writeFile(pathFile, dataJson, 'utf-8', (err) => {
+                    if (err) {
+                        console.error('Error al escribir el archivo:', err);
+                    } else {
+                        console.log('Archivo JSON guardado exitosamente.');
+                        const htmlToSend = `
+                        <!DOCTYPE html>
+                            <html lang="es">
+                            <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <link rel="stylesheet" href="style.css">
+                            <title>Entrevista</title>
+                            </head>
+                            <body>
+                            <!-- Comienzo la estructura de la entrevista -->
+                            <div id="form-sim" action="/simulacion" method="post" class="container-sim">
+                                <form action="/simulacion" method="post" class="faq">
+                                <input type="text" id="001">
+                                <input type="button" id="001" value="AGREGAR PREGUNTA">
+                                <input id="hidden" type="hidden" value="load">
+                                <input type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
+                                </form>
+
+                                <div id="question-box" class="question"></div>
+
+                                <div class="interview"><video id="videoElement" width="100%" height="100%" autoplay></video></div>
+
+                                <video id="recordedVideo" width="100%" height="100%" controls></video>
+
+                                <form action="/simulacion" method="post" class="menu">
+                                <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
+                                <input type="file" name="record" value="record">
+                                <input id="stopButton" type="submit" name="optionSimulacion" value="DETENER GRABACIÓN" onclick="stopInterview()">
+                                <input type="hidden" name="question" value="question">
+                                <input type="hidden" name="user-id" value="user-id">
+                                </form>
+                            </div>
+                            
+
+                            <script src="script.js"></script>
+                            </body>
+                            </html> 
+                        `;
+                        response.send(htmlToSend);
+                    }
+                });
+            }
+        });
+    } else if(action=="DETENER saasdGRABACIÓN"){
+        let recordedBlob=request.body.record;
+        let userID = request.body.user_id;
+        let question = request.body.question;
+        console.log(recordedBlob.value);
+        console.log(typeof(recordedBlob));
+        console.log(question);
+        console.log("llego hasta aqui")
+        //response.redirect("/simulacion.html");
+    }
+});
+
+app.post("/upload", upload.single('videoFile'), (request, response) => {
+    console.log("estamos en prueba");
+    const videoFile = request.file;
+
     const dbConnection = mysql.createConnection({
         host: 'localhost',
         user: 'invitado',
         password: '0000',
         database: 'interview app'
     });
+
     dbConnection.connect((err) => {
         if (err) {
             console.error('Error al conectar a la base de datos:', err);
@@ -209,66 +309,13 @@ app.post("/simulacion", function(request,response){
             console.log('Conexión exitosa a la base de datos');
         }
     });
-    const query = `select * from questions`;
-    dbConnection.query(query, (error, resultados) => {
-        if(error){
-            console.error('Error en la consulta:', error);
-            response.status(500).send('Error en la consulta');
-        }else {
-            console.log(resultados);
-            const dataJson = JSON.stringify(resultados, null, 2);
-            const directoryName = "JSON";
-            const fileName = "questions.json";
-            const pathFile = path.join(__dirname, directoryName, fileName);
-        
-            if (!fs.existsSync(path.join(__dirname, directoryName))) {
-                fs.mkdirSync(path.join(__dirname, directoryName), { recursive: true });
-            }
-        
-            fs.writeFile(pathFile, dataJson, 'utf-8', (err) => {
-                if (err) {
-                    console.error('Error al escribir el archivo:', err);
-                } else {
-                    console.log('Archivo JSON guardado exitosamente.');
-                    const htmlToSend = `
-                        <!DOCTYPE html>
-                        <html lang="es">
-                        <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <link rel="stylesheet" href="style.css">
-                        <title>Entrevista</title>
-                        </head>
-                        <body>
-                        <!-- Comienzo la estructura de la entrevista -->
-                        <form id="form-sim" action="/simulacion" method="post" class="container-sim">
-                            <div class="faq">
-                            <input type="text" id="001">
-                            <input type="button" id="001" value="AGREGAR PREGUNTA">
-                            <input id="hidden" type="hidden" value="load">
-                            <input type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
-                            </div>
-                        
-                            <div id="question-box" class="question"></div>
-                        
-                            <div class="interview"><video id="videoElement" width="100%" height="100%" autoplay></video></div>
-                        
-                            <video id="recordedVideo" width="100%" height="100%" controls></video>
-                        
-                            <div class="menu">
-                            <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
-                            <input id="stopButton" type="button" value="DETENER GRABACIÓN" onclick="stopInterview()">
-                            </div>
-                        </form>
-                        <script src="script.js"></script>
-                        </body>
-                        </html>
-                    `;
-                    response.send(htmlToSend);
-                }
-            });
-        }
+
+    dbConnection.query('INSERT INTO interviews (interview) VALUES (?)', [videoFile.buffer], (error, results) => {
+        if (error) throw error;
+        console.log('Registro insertado con éxito:', results.insertId);
     });
+
+    response.json({ status: 'OK', message: 'Solicitud recibida con éxito' });
 });
 
 app.listen(3000, function () {
