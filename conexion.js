@@ -94,8 +94,9 @@ app.post("/index", function (request, response) {
                         }
                     }
                 }else{//si no obtiene resultados
+                    let usuario="noExists"
                     console.log("el usuario no existe");
-                    response.redirect('/index.html');
+                    response.redirect(`/index.html?hiddenResponse=${usuario}`);
                 }
             }
         });
@@ -134,6 +135,7 @@ app.post("/registro",function (request,response) {
 
     console.log(action);
     console.log(pass);
+    //opciones para el action registrarse
     if(action=="REGISTRARSE"){
         const query = `SELECT * FROM users ORDER BY id DESC LIMIT 1`;
         console.log(query);
@@ -204,7 +206,7 @@ app.post("/registro",function (request,response) {
         });
     }
 });
-
+//post de respuesta de  para la simulacion
 app.post("/simulacion", function(request,response){
     console.log("dentro del post simulacion");
     let action= request.body.optionSimulacion;
@@ -244,47 +246,8 @@ app.post("/simulacion", function(request,response){
                         console.error('Error al escribir el archivo:', err);
                     } else {
                         console.log('Archivo JSON guardado exitosamente.');
-                        const htmlToSend = `
-                        <!DOCTYPE html>
-                        <html lang="es">
-                        <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <link rel="stylesheet" href="style.css">
-                        <title>Entrevista</title>
-                        </head>
-                        <body>
-                        <form action="/back" method="post">
-                            <img id="back-login" src="arrow.svg" alt="login">
-                            <input id="back-login2" type="submit">
-                        </form>
-                        <!-- Comienzo la estructura de la entrevista -->
-                        <div id="form-sim" class="container-sim">
-                            <form class="faq" action="/simulacion" method="post">
-                            <input id="hidden" type="hidden" value="load">
-                            <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
-                            </form>
-
-                            <div id="question-box" class="question"></div>
-
-                            <div class="interview"><video id="videoElement" width="100%" height="100%" autoplay></video></div>
-
-                            <!-- <video id="recordedVideo" width="100%" height="100%" controls></video> -->
-
-                            <form class="menu" action="/simulacion" method="post" enctype="multipart/form-data">
-                            <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
-                            <input id="record" type="file" name="record" value="record">
-                            <input id="stopButton" name=optionSimulacion type="button" value="DETENER GRABACIÓN" onclick="stopInterview()">
-                            </form>
-                            <input id="inputQuestion" type="hidden" name="question" value="question">
-                            <input type="hidden" name="user-id" value="user-id">
-                        </div>
-                        
-                        <script src="script.js"></script>
-                        </body>
-                        </html>
-                        `;
-                        response.send(htmlToSend);
+                        const hiddenResponse="hiddenResponse";
+                        response.redirect(`/simulacion.html?hiddenResponse=${hiddenResponse}`);
                     }
                 });
             }
@@ -298,17 +261,16 @@ app.post("/simulacion", function(request,response){
         response.redirect("/simulacion.html");
     }
 });
-
+//post de el envio del video y le procesa
 app.post("/upload", upload.single('videoFile'), (request, response) => {
     const videoFile = request.file;
-
     const dbConnection = mysql.createConnection({
         host: 'localhost',
         user: 'invitado',
         password: '0000',
         database: 'interview app'
     });
-
+//conexiona la base de datos
     dbConnection.connect((err) => {
         if (err) {
             console.error('Error al conectar a la base de datos:', err);
@@ -316,14 +278,14 @@ app.post("/upload", upload.single('videoFile'), (request, response) => {
             console.log('Conexión exitosa a la base de datos');
         }
     });
-
+    //realizo la consulta
     dbConnection.query('INSERT INTO interviews (interview, user_id, question) VALUES (?,?,?)', [videoFile.buffer,login_name_global,question_global], (error, results) => {
         if (error) throw error;
         console.log('Registro insertado con éxito:', results.insertId);
         response.redirect('/simulacion.html');
     });
 });
-
+//post para guardar el usuario la question en una variable de caracter global"apaño"
 app.post("/question-user", function(request, response) {
     console.log("Entrando en question-user");
     const login_name=request.body.login_name;
@@ -337,7 +299,7 @@ app.post("/question-user", function(request, response) {
 });
 
 
-
+//post para cuando te conectas como generador enviar la pregunta al servidor
 app.post("/generador",function (request, response) {
     console.log("dentro del post generador");
     let newQuestion=request.body.textQuestion;
@@ -363,7 +325,7 @@ app.post("/generador",function (request, response) {
         }
     });
 });
-
+//recogida de peticion de la flecha para volver al login
 app.post("/back",function(request,response){
     response.redirect("/index.html");
 })

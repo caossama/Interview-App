@@ -315,20 +315,19 @@ fetch('/question-user', {
 // Evento que se ejecuta cuando el DOM ha sido completamente cargado
 document.addEventListener("DOMContentLoaded", function() {
   // Obtengo la referencia al elemento con id 'hidden'
-  let inputHidden = document.getElementById('hidden');
-  // Verifico si el valor del input es "no-load"
-  if (inputHidden.value === "no-load") {
-    // Llamo a la función saveID para realizar alguna operación (no definida en el código proporcionado)
+  const currentUrl = window.location.href;
+
+  // Crear un objeto URL para facilitar la manipulación de la URL
+  const url = new URL(currentUrl);
+  
+  // Obtener el valor del parámetro 'login_name'
+  const hiddenResponse = url.searchParams.get('hiddenResponse');
+  console.log("hiddenRepsonse antes del if",hiddenResponse);
+  if (hiddenResponse=="hiddenResponse") {
     saveID();
-    // Deshabilito estos botones, porque eran para un sistema de bloqueo de botones en la simulación
-    // que al final no nos funcionó, pero para un futuro los dejamos y poder terminarlos
-    // // b2.disabled = true;
-    // // b3.disabled = true;
-    // Muestro en la consola un mensaje indicando que no se ha generado la pregunta aleatoriamente
-    console.log("No se ha podido generar la pregunta aleatoriamente");
-  } else {
-    // Si el valor del input no es "no-load", llamo a la función getRandomQuestion para obtener y mostrar una pregunta aleatoria
     getRandomQuestion();
+  } else if(hiddenResponse=="noExists"){
+    alert("El usuario no existe");
   }
 });
 
