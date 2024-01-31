@@ -6,6 +6,10 @@ const regexAdminP = /^0000$/i;
 
 const form = document.getElementById("login-form");
 
+const b1 = document.getElementById('hidden');
+const b2 = document.getElementById('startButton');
+const b3 = document.getElementById('stopButton');
+
 // Función para validar el campo del usuario de manera dinámica
 function userValidate() {
   let user = document.getElementById("user").value;
@@ -106,6 +110,8 @@ function startInterview() {
       .then(function (streamObj) {
         video.srcObject = streamObj;
         stream = streamObj;
+        b1.disabled = true;
+        b3.disabled = false;
         startRecording();
       })
       .catch(function (error) {
@@ -153,7 +159,6 @@ function startRecording() {
       console.error('Error al enviar el video al servidor:', error);
     });
 
-    
     // processAndShowVideo();
   };
 
@@ -220,12 +225,10 @@ function getRandomQuestion() {
   });
 }
 
-
 function sendData() {
-let question = localStorage.getItem('pregunta');
+  let question = localStorage.getItem('pregunta');
 
-// Crear un objeto con los datos
-let dataQ = {
+  let dataQ = {
   pregunta: question
 };
 
@@ -251,6 +254,8 @@ document.addEventListener("DOMContentLoaded", function() {
   let inputHidden = document.getElementById('hidden');
   if (inputHidden.value === "no-load") {
     saveID();
+    b2.disabled = true;
+    b3.disabled = true;
     console.log("No se ha podido generar la pregunta aleatoriamente");
   } else {
     getRandomQuestion();
@@ -270,3 +275,4 @@ function saveID() {
     console.log('login_name almacenado en localStorage:', loginName);
   }
 }
+
