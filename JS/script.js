@@ -243,7 +243,7 @@ fetch('/question-user', {
   },
   body: JSON.stringify(dataQ)
 })
-  .then(response => response.json())
+  // .then(response => response.json())
   .then(data => {
     // Manejar la respuesta del servidor si es necesario
     console.log(data);

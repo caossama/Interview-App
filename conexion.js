@@ -11,6 +11,13 @@ const storage = multer.memoryStorage(); // Almacenar archivos en memoria
 const upload = multer({ storage: storage });
 let login_name_global;
 let question_global;
+
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+});
 //app.set('view engine', 'ejs');
 // Configurar la ubicación de las vistas con ruta relativa
 //app.set('views', path.join(__dirname, 'HTML'));
@@ -247,7 +254,7 @@ app.post("/simulacion", function(request,response){
                         <title>Entrevista</title>
                         </head>
                         <body>
-                        <form action="/back">
+                        <form action="/back" method="post">
                             <img id="back-login" src="arrow.svg" alt="login">
                             <input id="back-login2" type="submit">
                         </form>
@@ -255,7 +262,7 @@ app.post("/simulacion", function(request,response){
                         <div id="form-sim" class="container-sim">
                             <form class="faq" action="/simulacion" method="post">
                             <input id="hidden" type="hidden" value="load">
-                            <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" disabled onclick="getRandomQuestion()">
+                            <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
                             </form>
 
                             <div id="question-box" class="question"></div>
@@ -267,7 +274,7 @@ app.post("/simulacion", function(request,response){
                             <form class="menu" action="/simulacion" method="post" enctype="multipart/form-data">
                             <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
                             <input id="record" type="file" name="record" value="record">
-                            <input id="stopButton" name=optionSimulacion type="button" value="DETENER GRABACIÓN" disabled onclick="stopInterview()">
+                            <input id="stopButton" name=optionSimulacion type="button" value="DETENER GRABACIÓN" onclick="stopInterview()">
                             </form>
                             <input id="inputQuestion" type="hidden" name="question" value="question">
                             <input type="hidden" name="user-id" value="user-id">
@@ -313,47 +320,6 @@ app.post("/upload", upload.single('videoFile'), (request, response) => {
     dbConnection.query('INSERT INTO interviews (interview, user_id, question) VALUES (?,?,?)', [videoFile.buffer,login_name_global,question_global], (error, results) => {
         if (error) throw error;
         console.log('Registro insertado con éxito:', results.insertId);
-        // const htmlToSend = `
-        //                 <!DOCTYPE html>
-        //                 <html lang="es">
-        //                 <head>
-        //                 <meta charset="UTF-8">
-        //                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        //                 <link rel="stylesheet" href="style.css">
-        //                 <title>Entrevista</title>
-        //                 </head>
-        //                 <body>
-        //                 <form action="/back">
-        //                     <img id="back-login" src="arrow.svg" alt="login">
-        //                     <input id="back-login2" type="submit">
-        //                 </form>
-        //                 <!-- Comienzo la estructura de la entrevista -->
-        //                 <div id="form-sim" class="container-sim">
-        //                     <form class="faq" action="/simulacion" method="post">
-        //                     <input id="hidden" type="hidden" value="no-load">
-        //                     <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA"  onclick="getRandomQuestion()">
-        //                     </form>
-
-        //                     <div id="question-box" class="question"></div>
-
-        //                     <div class="interview"><video id="videoElement" width="100%" height="100%" autoplay></video></div>
-
-        //                     <!-- <video id="recordedVideo" width="100%" height="100%" controls></video> -->
-
-        //                     <form class="menu" action="/simulacion" method="post" enctype="multipart/form-data">
-        //                     <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
-        //                     <input id="record" type="file" name="record" value="record">
-        //                     <input id="stopButton" name=optionSimulacion type="button" value="DETENER GRABACIÓN" disabled onclick="stopInterview()">
-        //                     </form>
-        //                     <input id="inputQuestion" type="hidden" name="question" value="question">
-        //                     <input type="hidden" name="user-id" value="user-id">
-        //                 </div>
-                        
-        //                 <script src="script.js"></script>
-        //                 </body>
-        //                 </html>
-        //                 `;
-        //                 response.send(htmlToSend);
         response.redirect('/simulacion.html');
     });
 });
@@ -367,19 +333,15 @@ app.post("/question-user", function(request, response) {
     console.log(typeof(question));
     console.log(question);
     console.log(login_name);
-
     response.send({ status: 'success' });
 });
 
 
 
 app.post("/generador",function (request, response) {
-    console.log("dentro del post");
-    //capturamos valores del form
-    // let action = request.body.optionIndex;
-    // let user = String(request.body.user);
-    // let pass = String(request.body.pass);
-    //creamos conexion a la base de datos
+    console.log("dentro del post generador");
+    let newQuestion=request.body.textQuestion;
+    console.log(newQuestion);
     const dbConnection = mysql.createConnection({
         host: 'localhost',
         user: 'invitado',
@@ -392,18 +354,19 @@ app.post("/generador",function (request, response) {
             console.error('Error al conectar a la base de datos:', err);
         } else {
             console.log('Conexión exitosa a la base de datos');
+            const query = 'INSERT INTO questions (question) VALUES (?)';
+            dbConnection.query(query, [newQuestion], (error, results, fields) => {
+                if (error) throw error;
+                console.log("ingreso de la pregunta con exito");
+                response.redirect("/generador.html")
+            });
         }
     });
 });
 
-
-
-app.get('/prueba', (request, response) => {
-    // Contenido HTML de la página estática
-    response.redirect("/simulacion.html");
-  });
-
-
+app.post("/back",function(request,response){
+    response.redirect("/index.html");
+})
 app.listen(3000, function () {
     console.log("Servidor creado en http://localhost:3000/index");
 });
