@@ -8,15 +8,8 @@
 </head>
 <body>
   <!-- Comienzo la estructura de la entrevista -->
-<<<<<<< HEAD
-  <div id="form-sim" action="/simulacion" method="post" class="container-sim">
-    <form action="/simulacion" method="post" class="faq">
-      <input type="text" id="001">
-      <input type="button" id="001" value="AGREGAR PREGUNTA">
-=======
   <div id="form-sim" class="container-sim">
     <form class="faq" action="/simulacion" method="post">
->>>>>>> 0e3d81f80611cbd5ef04e1bd88ed11f154f05048
       <input id="hidden" type="hidden" value="no-load">
       <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
     </form>
@@ -29,15 +22,8 @@
 
     <form action="/simulacion" method="post" enctype="multipart/form-data" class="menu">
       <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
-<<<<<<< HEAD
-      <input type="file" name="record" value="record">
-      <input id="stopButton" type="submit" name="optionSimulacion" value="DETENER GRABACIÓN" onclick="stopInterview()">
-      <input type="hidden" name="question" value="question">
-      <input type="hidden" name="user_id" value="user-id">
-=======
       <input id="record" type="file" name="record" value="record">
       <input id="stopButton" type="submit" value="DETENER GRABACIÓN" onclick="stopInterview()">
->>>>>>> 0e3d81f80611cbd5ef04e1bd88ed11f154f05048
     </form>
   </div>
 

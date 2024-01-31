@@ -79,7 +79,7 @@ app.post("/index", function (request, response) {
                         response.redirect("/generador.html");
                     }else{
                         if(resultados[0].login_name==user&&resultados[0].password==pass){//comprobamos si el usuario y su clave son equivalentes
-                            response.redirect('/simulacion.html');//iniciando la simulacion de entrevista
+                            response.redirect(`/simulacion.html?login_name=${user}`);//iniciando la simulacion de entrevista
                         }else{
                             console.log("clave  invalida");
                             response.redirect('/index.html');
