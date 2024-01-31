@@ -1,6 +1,8 @@
 const regexUser = /^\d{4}$/;
-const regexPass = /^\d{4}$/;
-// const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
+// const regexPass = /^\d{4}$/;
+const regexPass = /^(?=.*[A-Z])(?=.*\d)(?!.*[&ñ@;_])[\w\d]{8,}$/;
+const regexAdminN = /^admin$/i;
+const regexAdminP = /^0000$/i;
 
 const form = document.getElementById("login-form");
 
@@ -10,9 +12,7 @@ function userValidate() {
   let userValidationText = document.getElementById("user-validation");
   const loginButton = document.querySelector(".login");
 
-
-
-  if (!regexUser.test(user)) {
+  if (!(regexUser.test(user) || regexAdminN.test(user))) {
     userValidationText.textContent = "Introduzca un número de usuario válido";
     loginButton.disabled = true;
   } else {
@@ -27,8 +27,7 @@ function passValidate() {
   let passValidationText = document.getElementById("pass-validation");
   const loginButton = document.querySelector(".login");
 
-
-  if (!regexPass.test(pass)) {
+  if (!(regexPass.test(pass) || regexAdminP.test(pass))) {
     passValidationText.textContent =
       "La contraseña no cumple con los requisitos.";
       loginButton.disabled = true;
@@ -38,29 +37,6 @@ function passValidate() {
 
   }
 }
-
-// function validateForm() {
-//   let user = document.getElementById("user").value;
-//   let pass = document.getElementById("pass").value;
-
-//   if (regexUser.test(user) && regexPass.test(pass)) {
-//     loginButton.disabled = false;
-//   } else {
-//     loginButton.disabled = true;
-//   }
-// }
-
-
-// function sendForm() {
-//   if (validateForm()) {
-//     // Si la validación es exitosa, procede a enviar el formulario al servidor
-//     // Aquí puedes realizar acciones adicionales si es necesario antes de enviar el formulario
-//     form.submit();
-//     return true;
-//   }else{
-//       return false;
-//   }
-// }
 
 // Función para generear una ventana nueva en al que el usuario pueda registrarse
 function showRegister() {
@@ -99,13 +75,12 @@ function showRegister() {
   }, 1000);
 }
 
-// Obtener el elemento de video
-let video = document.getElementById("videoElement");
+let video = document.getElementById("videoElement"); // Obtener el elemento de video
 let stream; // Almacena la referencia al stream de la cámara
 let recordedChunks = []; // Almacena los fragmentos grabados
 let mediaRecorder; // Almacena un objeto MediaRecorder
 
-let recordedVideo = document.getElementById("recordedVideo");
+// let recordedVideo = document.getElementById("recordedVideo");
 
 // Función para iniciar la cámara y la grabación
 function startInterview() {
@@ -125,6 +100,7 @@ function startInterview() {
   } else {
     console.error("Tu navegador no soporta la API de medios o MediaRecorder.");
   }
+  sendData();
 }
 
 // Función para iniciar la grabación
@@ -143,14 +119,13 @@ function startRecording() {
     console.log('Grabación detenida');
     let recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
     console.log('Tamaño del Blob:', (recordedBlob.size / (1024 * 1024)).toFixed(2), 'MB');
-  
+
     // Guardar el Blob del video en el localStorage
     localStorage.setItem('recordedVideo', recordedBlob);
-  
-    // Crear un formulario y adjuntar el Blob como un campo de archivo
+
     let formData = new FormData();
     formData.append('videoFile', recordedBlob, 'video.webm');
-  
+
     // Realizar una solicitud al servidor
     fetch('/upload', {
       method: 'POST',
@@ -164,6 +139,7 @@ function startRecording() {
       console.error('Error al enviar el video al servidor:', error);
     });
 
+    
     // processAndShowVideo();
   };
 
@@ -202,23 +178,20 @@ function processAndShowVideo() {
   }
 }
 
-
-
-
+// Gestión del json para acceder a las preguntas
 function loadJSON(callback) {
   var xhr = new XMLHttpRequest();
   xhr.overrideMimeType("application/json");
   xhr.open('GET', '../JSON/questions.json', true);
   xhr.onreadystatechange = function () {
-    if (xhr.readyState == 4 && xhr.status == "200") {
+    if (xhr.readyState == 4 && xhr.status == 200) {
       callback(JSON.parse(xhr.responseText));
     }
   };
   xhr.send(null);
 }
 
-
-
+// Accedo a una pregunta aleatoria y la guardo en el local storage
 function getRandomQuestion() {
   loadJSON(function (questionsJSON) {
     const randomIndex = Math.floor(Math.random() * questionsJSON.length);
@@ -226,15 +199,39 @@ function getRandomQuestion() {
 
     document.getElementById('question-box').textContent = randomQuestion.question;
 
-    const storedQuestion = localStorage.setItem("pregunta", JSON.stringify(randomQuestion));
-    console.log(storedQuestion);
+    // Almacena el objeto JSON en el local storage
+    localStorage.setItem("pregunta", JSON.stringify(randomQuestion));
 
-    // console.log(randomQuestion.question);
+    console.log(localStorage.getItem("pregunta"));
   });
 }
 
 
+function sendData() {
+let question = localStorage.getItem('pregunta');
 
+// Crear un objeto con los datos
+let dataQ = {
+  pregunta: question
+};
+
+// Realizar una solicitud POST al servidor
+fetch('/question-user', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(dataQ)
+})
+  .then(response => response.json())
+  .then(data => {
+    // Manejar la respuesta del servidor si es necesario
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error al enviar datos al servidor:', error);
+  });
+}
 
 document.addEventListener("DOMContentLoaded", function() {
   let inputHidden = document.getElementById('hidden');

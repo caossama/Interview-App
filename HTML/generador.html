@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Agrega preguntas a la base de datos</h1>
-    <form action="/generador">
-        <input type="text" name="textQuestion">
-        <input type="submit" name="sendQuestion" value="Send">
-    </form>
-    <form action="/generador">
-        <input type="submit" name="WatchQuestions" value="Cargar Preguntas">
-    </form>
+    <div id="gen">
+        <p>Bienvenido generador, por favor, agregue preguntas</p>
+        <form id="gen-quest" method="POST" action="/generador">
+            <input id="gen-txt" type="text" name="textQuestion">
+            <input id="gen-send" type="submit" name="sendQuestion" value="Send">
+        </form>
+        <form action="/generador" method="POST">
+            <input id="gen-login" type="submit" name="watchQuestions" value="Volver al Login">
+        </form>
+    </div>
 </body>
 </html>
