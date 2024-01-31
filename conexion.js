@@ -247,6 +247,10 @@ app.post("/simulacion", function(request,response){
                         <title>Entrevista</title>
                         </head>
                         <body>
+                        <form action="/back">
+                            <img id="back-login" src="arrow.svg" alt="login">
+                            <input id="back-login2" type="submit">
+                        </form>
                         <!-- Comienzo la estructura de la entrevista -->
                         <div id="form-sim" class="container-sim">
                             <form class="faq" action="/simulacion" method="post">
@@ -263,7 +267,7 @@ app.post("/simulacion", function(request,response){
                             <form class="menu" action="/simulacion" method="post" enctype="multipart/form-data">
                             <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
                             <input id="record" type="file" name="record" value="record">
-                            <input id="stopButton" type="submit" value="DETENER GRABACIÓN" disabled onclick="stopInterview()">
+                            <input id="stopButton" name=optionSimulacion type="button" value="DETENER GRABACIÓN" disabled onclick="stopInterview()">
                             </form>
                             <input id="inputQuestion" type="hidden" name="question" value="question">
                             <input type="hidden" name="user-id" value="user-id">
@@ -306,12 +310,52 @@ app.post("/upload", upload.single('videoFile'), (request, response) => {
         }
     });
 
-    dbConnection.query('INSERT INTO interviews (interview) VALUES (?)', [videoFile.buffer], (error, results) => {
+    dbConnection.query('INSERT INTO interviews (interview, user_id, question) VALUES (?,?,?)', [videoFile.buffer,login_name_global,question_global], (error, results) => {
         if (error) throw error;
         console.log('Registro insertado con éxito:', results.insertId);
-    });
+        // const htmlToSend = `
+        //                 <!DOCTYPE html>
+        //                 <html lang="es">
+        //                 <head>
+        //                 <meta charset="UTF-8">
+        //                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        //                 <link rel="stylesheet" href="style.css">
+        //                 <title>Entrevista</title>
+        //                 </head>
+        //                 <body>
+        //                 <form action="/back">
+        //                     <img id="back-login" src="arrow.svg" alt="login">
+        //                     <input id="back-login2" type="submit">
+        //                 </form>
+        //                 <!-- Comienzo la estructura de la entrevista -->
+        //                 <div id="form-sim" class="container-sim">
+        //                     <form class="faq" action="/simulacion" method="post">
+        //                     <input id="hidden" type="hidden" value="no-load">
+        //                     <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA"  onclick="getRandomQuestion()">
+        //                     </form>
 
-    response.redirect('/simulacion.html');
+        //                     <div id="question-box" class="question"></div>
+
+        //                     <div class="interview"><video id="videoElement" width="100%" height="100%" autoplay></video></div>
+
+        //                     <!-- <video id="recordedVideo" width="100%" height="100%" controls></video> -->
+
+        //                     <form class="menu" action="/simulacion" method="post" enctype="multipart/form-data">
+        //                     <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
+        //                     <input id="record" type="file" name="record" value="record">
+        //                     <input id="stopButton" name=optionSimulacion type="button" value="DETENER GRABACIÓN" disabled onclick="stopInterview()">
+        //                     </form>
+        //                     <input id="inputQuestion" type="hidden" name="question" value="question">
+        //                     <input type="hidden" name="user-id" value="user-id">
+        //                 </div>
+                        
+        //                 <script src="script.js"></script>
+        //                 </body>
+        //                 </html>
+        //                 `;
+        //                 response.send(htmlToSend);
+        response.redirect('/simulacion.html');
+    });
 });
 
 app.post("/question-user", function(request, response) {
@@ -327,9 +371,7 @@ app.post("/question-user", function(request, response) {
     response.send({ status: 'success' });
 });
 
-app.listen(3000, function () {
-    console.log("Servidor creado en http://localhost:3000/index");
-});
+
 
 app.post("/generador",function (request, response) {
     console.log("dentro del post");
@@ -352,4 +394,16 @@ app.post("/generador",function (request, response) {
             console.log('Conexión exitosa a la base de datos');
         }
     });
+});
+
+
+
+app.get('/prueba', (request, response) => {
+    // Contenido HTML de la página estática
+    response.redirect("/simulacion.html");
+  });
+
+
+app.listen(3000, function () {
+    console.log("Servidor creado en http://localhost:3000/index");
 });

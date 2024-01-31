@@ -26,10 +26,10 @@
 
     <!-- <video id="recordedVideo" width="100%" height="100%" controls></video> -->
 
-    <form action="/simulacion" method="post" enctype="multipart/form-data" class="menu">
+    <form  id="form-record" action="/simulacion" method="post" enctype="multipart/form-data" class="menu">
       <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
       <input id="record" type="file" name="record" value="record">
-      <input id="stopButton" type="submit" value="DETENER GRABACIÓN" onclick="stopInterview()">
+      <input id="stopButton" name="optionSimulacion" type="button" value="DETENER GRABACIÓN" onclick="stopInterview()">
     </form>
   </div>
 
