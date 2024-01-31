@@ -34,7 +34,6 @@ function passValidate() {
   } else {
     passValidationText.textContent = "";
     loginButton.disabled = false;
-
   }
 }
 
@@ -73,6 +72,21 @@ function showRegister() {
       document.body.removeChild(overlay); // Eliminar el fondo transparente al cerrar la ventana de registro
     }
   }, 1000);
+}
+
+function passValidateRegister() {
+  let pass = document.getElementById("pass-register").value;
+  let passValidationText = document.getElementById("pass-validation-register");
+  const registerButton = document.getElementById("register-button");
+
+  if (!regexPass.test(pass)) {
+    passValidationText.textContent =
+      "La contraseña no cumple con los requisitos.";
+      registerButton.disabled = true;
+  } else {
+    passValidationText.textContent = "";
+    registerButton.disabled = false;
+  }
 }
 
 let video = document.getElementById("videoElement"); // Obtener el elemento de video
@@ -236,8 +250,23 @@ fetch('/question-user', {
 document.addEventListener("DOMContentLoaded", function() {
   let inputHidden = document.getElementById('hidden');
   if (inputHidden.value === "no-load") {
-
+    saveID();
+    console.log("No se ha podido generar la pregunta aleatoriamente");
   } else {
     getRandomQuestion();
   }
 });
+
+function saveID() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const loginName = urlParams.get('login_name');
+
+  if (loginName !== null) {
+    console.log('Script ejecutado en simulacion.html');
+    // Almacenar el valor en localStorage
+    localStorage.setItem('login_name', loginName);
+
+    // Puedes agregar más lógica aquí si es necesario
+    console.log('login_name almacenado en localStorage:', loginName);
+  }
+}

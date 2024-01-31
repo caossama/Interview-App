@@ -8,9 +8,11 @@
 </head>
 <body id="register">
   <h1>Bienvenido Aspirante</h1> 
-  <h2>Por favor, inserte una contraseña:</h2>
-  <form action="registro" method="post">
-    <input class="password-register" name="pass" type="password" required>
+  <h2>Por favor, inserte una contraseña con una mayúscula, un número y sin caracteres especiales:</h2>
+  <form id="register-form" action="registro" method="post">
+    <p class="validate-text-register" id="pass-validation-register"></p>
+
+    <input id="pass-register" class="password-register" name="pass" type="password" required oninput="passValidateRegister()">
 
     <input id="register-button" class="send-pass" name="optionRegistro" type="submit" value="REGISTRARSE">
   </form>
