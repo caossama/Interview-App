@@ -9,7 +9,9 @@ Ejecutas el conexion.js con node instalado.
 
 El feedback de la aplicación (vista al servidor) está en la consola del servidor.
 Otras muestras de feedback están en la consola del navegador o en la misma pantalla de la Web.
+USUARIOS CON VISTAS PREDEFINIDAS
 usuario "generador" pass "0000"
+usuario "admin" pass "0000"
 
 AUTORES:
 Víctor Alba García
