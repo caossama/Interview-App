@@ -69,8 +69,10 @@ app.post("/index", function (request, response) {
                     console.log(resultados[0].password);
                     if(resultados[0].login_name=="admin"&&resultados[0].password=="0000"&&user=="admin"&&pass=="0000"){//comprobamos si es el admin 
                         console.log("generando vista administrador");
+                        response.redirect("/administrador.html");
                     }else if(resultados[0].login_name=="generador"&&resultados[0].password=="0000"&&user=="generador"&&pass=="0000"){//comprobamos si es el generador
                         console.log("generando vista generador");
+                        response.redirect("/generador.html");
                     }else{
                         if(resultados[0].login_name==user&&resultados[0].password==pass){//comprobamos si el usuario y su clave son equivalentes
                             response.redirect('/simulacion.html');//iniciando la simulacion de entrevista
@@ -258,8 +260,6 @@ app.post("/simulacion", function(request,response){
                             <input id="stopButton" type="button" value="DETENER GRABACIÓN" onclick="stopInterview()">
                             </div>
                         </form>
-                        
-                        
                         <script src="script.js"></script>
                         </body>
                         </html>
