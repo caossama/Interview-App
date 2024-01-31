@@ -223,10 +223,12 @@ function getRandomQuestion() {
 
 function sendData() {
 let question = localStorage.getItem('pregunta');
+let login_name= localStorage.getItem('login_name');
 
 // Crear un objeto con los datos
 let dataQ = {
-  pregunta: question
+  pregunta: question,
+  login_name: login_name
 };
 
 // Realizar una solicitud POST al servidor

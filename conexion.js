@@ -9,7 +9,8 @@ const multer = require('multer');
 const { type } = require('os');
 const storage = multer.memoryStorage(); // Almacenar archivos en memoria
 const upload = multer({ storage: storage });
-
+let login_name_global;
+let question_global;
 //app.set('view engine', 'ejs');
 // Configurar la ubicación de las vistas con ruta relativa
 //app.set('views', path.join(__dirname, 'HTML'));
@@ -250,7 +251,7 @@ app.post("/simulacion", function(request,response){
                         <div id="form-sim" class="container-sim">
                             <form class="faq" action="/simulacion" method="post">
                             <input id="hidden" type="hidden" value="load">
-                            <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" onclick="getRandomQuestion()">
+                            <input class="faq-question" type="submit" name="optionSimulacion" value="GENERAR PREGUNTA" disabled onclick="getRandomQuestion()">
                             </form>
 
                             <div id="question-box" class="question"></div>
@@ -262,7 +263,7 @@ app.post("/simulacion", function(request,response){
                             <form class="menu" action="/simulacion" method="post" enctype="multipart/form-data">
                             <input id="startButton" type="button" value="GRABAR RESPUESTA" onclick="startInterview()">
                             <input id="record" type="file" name="record" value="record">
-                            <input id="stopButton" type="submit" value="DETENER GRABACIÓN" onclick="stopInterview()">
+                            <input id="stopButton" type="submit" value="DETENER GRABACIÓN" disabled onclick="stopInterview()">
                             </form>
                             <input id="inputQuestion" type="hidden" name="question" value="question">
                             <input type="hidden" name="user-id" value="user-id">
@@ -310,13 +311,19 @@ app.post("/upload", upload.single('videoFile'), (request, response) => {
         console.log('Registro insertado con éxito:', results.insertId);
     });
 
-    response.json({ status: 'OK', message: 'Solicitud recibida con éxito' });
+    response.redirect('/simulacion.html');
 });
 
 app.post("/question-user", function(request, response) {
     console.log("Entrando en question-user");
+    const login_name=request.body.login_name;
     const question = request.body.pregunta;
+    question_global=question;
+    login_name_global=login_name;
+    console.log(typeof(question));
     console.log(question);
+    console.log(login_name);
+
     response.send({ status: 'success' });
 });
 
