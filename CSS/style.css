@@ -11,6 +11,27 @@ body {
   width: 100vw;
 }
 
+#back-login {
+  width: 40px;
+  transform: rotate(180deg);
+  position: absolute;
+  top: 5%;
+  left: 5%;
+}
+#back-login2 {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  color: transparent;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+
+
 /*
 *--------------------------------
 *  ---- CSS para el Log in ----
@@ -277,21 +298,24 @@ body {
   background: rgb(207, 207, 207);
 
   display: grid;
-  grid-template-rows: 30% 30% 40%;
+  grid-template-rows: 30% 40%;
 }
 
 #gen p {
   font-size: 2rem;
   text-align: center;
+  margin-top: 2%;
 }
 
 #gen #gen-quest {
+  margin-top: 4%;
+
   display: grid;
   grid-template-columns: 70% 5% 25%;
 }
 
 #gen #gen-quest #gen-send {
-  width: 100%;
+  width: 80%;
   height: 80%;
   margin: 0 auto;
   grid-column: 3/4;
@@ -300,6 +324,7 @@ body {
   color: white;
   border: 0;
   font-size: 1.1rem;
+  margin-right: 30%;
 }
 
 #gen #gen-quest #gen-send:hover {
@@ -308,8 +333,12 @@ body {
 }
 
 #gen #gen-quest #gen-txt {
-  width: 100%;
+  width: 80%;
   height: 80%;
 
   font-size: 1.5rem;
+  background: rgb(255, 255, 255);
+  outline: none;
+  border: none;
+  margin-left: 10%;
 }
